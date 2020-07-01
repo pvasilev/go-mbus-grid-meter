@@ -31,10 +31,14 @@ func ReadSqlFile(fileName string) (*SQLFile, error) {
 	return result, scanner.Err()
 }
 
-func ImportSqlFile(fileData *SQLFile, host string, port int, user string, password string, dbname string, tablename string) (int, error) {
+func ImportSqlFile(fileData *SQLFile, pgConf *PgSqlConf) (int, error) {
+	return ImportSqlFileEx(fileData, pgConf.Host, pgConf.Port, pgConf.UserName, pgConf.Password, pgConf.Dbname)
+}
 
-	dsn := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
+func ImportSqlFileEx(fileData *SQLFile, host string, port int, user string, password string, dbname string) (int, error) {
+
+	dsn := fmt.Sprintf("Host=%s Port=%d user=%s "+
+		"Password=%s Dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 
 	db, err := sql.Open("postgres", dsn)
@@ -47,13 +51,13 @@ func ImportSqlFile(fileData *SQLFile, host string, port int, user string, passwo
 
 	err = db.Ping()
 	if err != nil {
-		log.Fatal("Failed to ping Postgresql database")
+		log.Fatal("Failed to ping Postgresql Dbname")
 		return 0, err
 	}
 
 	tx, err := db.Begin()
 	if err != nil {
-		log.Fatalf("Failed to open transaction to the database")
+		log.Fatalf("Failed to open transaction to the Dbname")
 		return 0, err
 	}
 
@@ -63,7 +67,7 @@ func ImportSqlFile(fileData *SQLFile, host string, port int, user string, passwo
 			msg := fmt.Sprintf("Failed to execute SQL: %q at file:'%q' line %d", s, fileData.FileName, i)
 			err = tx.Rollback()
 			if nil != err {
-				msg += fmt.Sprintf("Additionally failed to rollback transaction to database")
+				msg += fmt.Sprintf("Additionally failed to rollback transaction to Dbname")
 				return 0, err
 			}
 			log.Fatal(msg)
@@ -72,7 +76,7 @@ func ImportSqlFile(fileData *SQLFile, host string, port int, user string, passwo
 	}
 	err = tx.Commit()
 	if err != nil {
-		log.Fatalf("Failed to commit transaction to the database")
+		log.Fatalf("Failed to commit transaction to the Dbname")
 		return 0, nil
 	}
 

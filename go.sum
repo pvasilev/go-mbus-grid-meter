@@ -1,2 +1,4 @@
 github.com/lib/pq v1.7.0 h1:h93mCPfUSkaul3Ka/VG8uZdmW1uMHDGxzu0NWHuJmHY=
 github.com/lib/pq v1.7.0/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
+github.com/pvasilev/go-mbus-grid-meter v0.0.0-20200701141937-f9c8a74b101c h1:g9LJu4FlLrPn4NZl/3dmvzhLJVh3WsunSNvDnZwI3Ts=
+github.com/pvasilev/go-mbus-grid-meter v0.0.0-20200701141937-f9c8a74b101c/go.mod h1:JJgAQPNncFi5t0RPVnvxKZnJHYz0d6GnEvqRytpnd60=
