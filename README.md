@@ -1,0 +1,1 @@
+Sample GoLang application to deal with MBus electrical Grid meter data
