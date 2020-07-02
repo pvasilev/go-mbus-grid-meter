@@ -174,6 +174,16 @@ func extractConfFromCommandLineParams(cliFlagsPtrs CliFlags) (*PgSqlConf, error)
 	return conf, nil
 }
 
+func mergeConfigurations(conf *PgSqlConf, other PgSqlConf) {
+
+	if len(other.Host) > 0 { conf.Host = other.Host }
+	if other.Port > 0 { conf.Port = other.Port }
+	if len(other.UserName) > 0 { conf.UserName = other.UserName }
+	if len(other.Password) > 0 { conf.Password = other.Password }
+	if len(other.Dbname) > 0 { conf.Dbname = other.Dbname }
+
+}
+
 // ProcessConfiguration tries to extract the configuration for the tool from command line, environment of specified file
 func ProcessConfiguration() (*CliFlags, *PgSqlConf, error) {
 	initializeFlags()
@@ -186,11 +196,7 @@ func ProcessConfiguration() (*CliFlags, *PgSqlConf, error) {
 		log.Printf("Failed to extract configuration from environment")
 		return nil, nil, err
 	}
-	if len(confEnv.Host) > 0 { conf.Host = confEnv.Host }
-	if confEnv.Port > 0 { conf.Port = confEnv.Port }
-	if len(confEnv.UserName) > 0 { conf.UserName = confEnv.UserName }
-	if len(confEnv.Password) > 0 { conf.Password = confEnv.Password }
-	if len(confEnv.Dbname) > 0 { conf.Dbname = confEnv.Dbname }
+	mergeConfigurations(conf, *confEnv)
 
 	if (len(*cliFlags.ConfFile)) > 0 {
 		fileName := *cliFlags.ConfFile
@@ -201,11 +207,7 @@ func ProcessConfiguration() (*CliFlags, *PgSqlConf, error) {
 				log.Printf("Failed to extract configuration from JSON file "+fileName)
 				return nil, nil, err
 			}
-			if len(confJson.Host) > 0 { conf.Host = confJson.Host }
-			if confJson.Port > 0 { conf.Port = confJson.Port }
-			if len(confJson.UserName) > 0 { conf.UserName = confJson.UserName }
-			if len(confJson.Password) > 0 { conf.Password = confJson.Password }
-			if len(confJson.Dbname) > 0 { conf.Dbname = confJson.Dbname }
+			mergeConfigurations(conf, *confJson)
 		} else if (filepath.Ext(fileName) == ".ini") || (filepath.Ext(fileName) == ".properties") {
 			// Try to get configuration from Properties/INI type file
 			confProps, err := parseConfFromPropertiesFile(fileName)
@@ -213,11 +215,7 @@ func ProcessConfiguration() (*CliFlags, *PgSqlConf, error) {
 				log.Printf("Failed to extract configuration from Properties file "+fileName)
 				return nil, nil, err
 			}
-			if len(confProps.Host) > 0 { conf.Host = confProps.Host }
-			if confProps.Port > 0 { conf.Port = confProps.Port }
-			if len(confProps.UserName) > 0 { conf.UserName = confProps.UserName }
-			if len(confProps.Password) > 0 { conf.Password = confProps.Password }
-			if len(confProps.Dbname) > 0 { conf.Dbname = confProps.Dbname }
+			mergeConfigurations(conf, *confProps)
 		} else {
 			return nil, nil, errors.New("Unrecognized configuration file "+fileName)
 		}
@@ -229,11 +227,7 @@ func ProcessConfiguration() (*CliFlags, *PgSqlConf, error) {
 		log.Printf("Failed to extract configuration from environment")
 		return nil, nil, err
 	}
-	if len(confCli.Host) > 0 { conf.Host = confCli.Host }
-	if confCli.Port > 0 { conf.Port = confCli.Port }
-	if len(confCli.UserName) > 0 { conf.UserName = confCli.UserName }
-	if len(confCli.Password) > 0 { conf.Password = confCli.Password }
-	if len(confCli.Dbname) > 0 { conf.Dbname = confCli.Dbname }
+	mergeConfigurations(conf, *confCli)
 
 	return cliFlags, conf, nil
 }
