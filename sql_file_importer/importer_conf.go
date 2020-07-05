@@ -208,7 +208,7 @@ func ProcessConfiguration() (*CliFlags, *PgSqlConf, error) {
 				return nil, nil, err
 			}
 			mergeConfigurations(conf, *confJson)
-		} else if (filepath.Ext(fileName) == ".ini") || (filepath.Ext(fileName) == ".properties") {
+		} else if (filepath.Ext(fileName) == ".ini") || (filepath.Ext(fileName) == ".properties") || (filepath.Ext(fileName) == ".props") {
 			// Try to get configuration from Properties/INI type file
 			confProps, err := parseConfFromPropertiesFile(fileName)
 			if err != nil {
